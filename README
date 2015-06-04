@@ -1,0 +1,9 @@
+Install:
+
+
+
+TODO:
+
+Converting to to_html seems to be doing well, maybe use that for parsing multi-recs???
+
+Make it export as json instead of html, html is so fugly
