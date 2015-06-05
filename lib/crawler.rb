@@ -9,12 +9,25 @@ class Crawler
 
   def initialize(opts)
     @export_format = opts[:export_format]
+    @source_url = opts[:link]
+    @use_sample_source = opts[:use_sample_source]
+    @open_rec_urls = opts[:open_rec_urls]
   end
 
-  def crawl(link, use_sample_source=false, open_rec_urls=false)
-    debug = use_sample_source || !open_rec_urls
+  def use_sample_source
+    @use_sample_source
+  end
 
+  def open_rec_urls
+    @open_rec_urls
+  end
 
+  def debug
+    use_sample_source || !open_rec_urls
+  end
+
+  def crawl
+    link = @source_url
     if use_sample_source
       page = Nokogiri::HTML(File.open('examples/sample_source.html'))
     else
@@ -32,38 +45,21 @@ class Crawler
                    :initial_tags => id_tags}
 
 
-    recs = []
+    @recs = []
 
     #Grab all urls aside from the OP
     comments = page.css(".comment-depth-1 .comment .inner .comment-content")
     
     comments.each do |reply|
       # An array of Rec objects with the relevant data
-      recs += Rec.extract_from_comment(reply, rec_options)
+      @recs += Rec.extract_from_comment(reply, rec_options)
     end
 
-
-    builder = Nokogiri::HTML::DocumentFragment.parse ""
-    Nokogiri::HTML::Builder.with(builder) do |doc|
-      doc.title link
-    end
-
-    list = Nokogiri::XML::Node.new "dl", builder
-
-
-    # now we put it in the html
-    recs.each do |rec|
-      p "Adding rec: #{rec}"
-
-      list << rec.dt_node(builder)
-      list << rec.dd_node(builder)
-    end
-
-    builder << list
-    
-    file_name = id_tags.join + (debug ? "-debug" : "") + ".html"
-    File.open("results/#{file_name}", "w") do |f|
-      f << CGI.unescapeHTML(builder.to_html)
+    case @export_format
+    when "html"
+      do_html_export(link, id_tags)
+    when "json"
+      do_json_export
     end
   end
 
@@ -95,5 +91,30 @@ class Crawler
     tags << "thread:#{thread_id}" if thread_id
 
     tags
+  end
+
+  def do_html_export(link, id_tags)
+    builder = Nokogiri::HTML::DocumentFragment.parse ""
+    Nokogiri::HTML::Builder.with(builder) do |doc|
+      doc.title link
+    end
+
+    list = Nokogiri::XML::Node.new "dl", builder
+
+
+    # now we put it in the html
+    @recs.each do |rec|
+      p "Adding rec: #{rec}"
+
+      list << rec.dt_node(builder)
+      list << rec.dd_node(builder)
+    end
+
+    builder << list
+    
+    file_name = id_tags.join + (debug ? "-debug" : "") + ".html"
+    File.open("results/#{file_name}", "w") do |f|
+      f << CGI.unescapeHTML(builder.to_html)
+    end
   end
 end
