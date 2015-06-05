@@ -1,5 +1,6 @@
 require 'nokogiri'
 require 'open-uri'
+require 'open_uri_redirections'
 require 'uri'
 class Rec
   DEFAULT_TAGS = ["needs_better_tags"]
@@ -47,7 +48,7 @@ class Rec
         description = broken_up_comment.detect{|x| x.include?(url)}
       end
 
-      description += "\n\n#{comment_css_id}"
+      description += "\n\n\n\n#{comment_css_id}"
 
       Rec.new(:url => url, 
               :description => description, 
@@ -59,7 +60,7 @@ class Rec
   def self.parse_multi_rec_comment(content, urls)
     result = []
 
-    text = content.inner_html.gsub(/<\/?wbr>/, "").split("<br><br>")
+    text = content.inner_html.gsub(/<\/?wbr>/, "").split("<br>")
     #binding.pry if content.text =~ /I liked this one/
 
     urls.each do |url|
@@ -145,6 +146,6 @@ class Rec
   # Just general cleanup of descriptions to convert it into something 
   # that looks nice.
   def clean_description(text)
-    text.gsub("()", "").gsub("<br>", "\n").gsub(/[:-\s]+$/, "")
+    text.gsub("()", "").gsub("<br>", "\n").gsub(/[\:\-\s]+$/, "")
   end
 end

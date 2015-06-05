@@ -7,6 +7,10 @@ require 'uri'
 
 class Crawler
 
+  def initialize(opts)
+    @export_format = opts[:export_format]
+  end
+
   def crawl(link, use_sample_source=false, open_rec_urls=false)
     debug = use_sample_source || !open_rec_urls
 
@@ -18,14 +22,6 @@ class Crawler
       page = Nokogiri::HTML(open(link.dup))
     end
 
-    builder = Nokogiri::HTML::DocumentFragment.parse ""
-    Nokogiri::HTML::Builder.with(builder) do |doc|
-      doc.title link
-    end
-
-    list = Nokogiri::XML::Node.new "dl", builder
-
-
     # Data about the source post
     original_title = page.css(".comment-depth-1 .comment-title").first.text
 
@@ -35,22 +31,32 @@ class Crawler
                    :original_title => original_title,
                    :initial_tags => id_tags}
 
-    #top level comments are requests -- so we start parsing there
-    requests = page.css(".comment-depth-2")
-    requests.each do |request|
-      replies = request.css(".comment .inner .comment-content")
-      replies.each do |reply|
-        # An array of Rec objects with the relevant data
-        recs = Rec.extract_from_comment(reply, rec_options)
 
-        # now we put it in the html
-        recs.each do |rec|
-          p "Adding rec: #{rec}"
+    recs = []
 
-          list << rec.dt_node(builder)
-          list << rec.dd_node(builder)
-        end
-      end
+    #Grab all urls aside from the OP
+    comments = page.css(".comment-depth-1 .comment .inner .comment-content")
+    
+    comments.each do |reply|
+      # An array of Rec objects with the relevant data
+      recs += Rec.extract_from_comment(reply, rec_options)
+    end
+
+
+    builder = Nokogiri::HTML::DocumentFragment.parse ""
+    Nokogiri::HTML::Builder.with(builder) do |doc|
+      doc.title link
+    end
+
+    list = Nokogiri::XML::Node.new "dl", builder
+
+
+    # now we put it in the html
+    recs.each do |rec|
+      p "Adding rec: #{rec}"
+
+      list << rec.dt_node(builder)
+      list << rec.dd_node(builder)
     end
 
     builder << list
