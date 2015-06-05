@@ -2,8 +2,9 @@ require 'nokogiri'
 require 'open-uri'
 require 'open_uri_redirections'
 require 'uri'
+require 'json'
 class Rec
-  DEFAULT_TAGS = ["needs_better_tags"]
+  DEFAULT_TAGS = ["needs_better_tags", "import_test"]
 
 
   # Takes a comment node (class .comment-content) and returns 
@@ -48,7 +49,7 @@ class Rec
         description = broken_up_comment.detect{|x| x.include?(url)}
       end
 
-      description += "\n\n\n\n#{comment_css_id}"
+      description += "\r\n\r\n#{comment_css_id}"
 
       Rec.new(:url => url, 
               :description => description, 
@@ -80,6 +81,7 @@ class Rec
 
     # should be able to pull the fandom out of the title too if it's from ao3
     @title = params[:title]
+    p "Creating rec: #{self}"
   end
 
   def tags
@@ -120,6 +122,25 @@ class Rec
   def to_s
     "#{url}: #{title}"
   end
+  
+  #{"href":"http:\/\/www.livejournal.com\/",
+  #"description":"another test",
+  #"extended":"what about break tags<br><br><br>and some <i>italics</i>?",
+  #"shared":"no","tags":"import_test","time":"2015-06-05 22:49:30 -0700", 
+  #{}"toread":"yes"}
+  def to_hash
+    # There's a bug in the pinboard importer that makes toread => "no" mark as 
+    # unread right now
+    {
+      :href => url,
+      :description => clean_string(title),
+      :extended => clean_string(description),
+      :shared => "no",
+      :tags => clean_string(tags.join(" ")),
+      :time => Time.now.to_s,
+      :toread => "yes"
+    }
+  end
 
   protected
 
@@ -146,6 +167,13 @@ class Rec
   # Just general cleanup of descriptions to convert it into something 
   # that looks nice.
   def clean_description(text)
-    text.gsub("()", "").gsub("<br>", "\n").gsub(/[\:\-\s]+$/, "")
+    desc = text.gsub("()", "").gsub("<br>", "\r\n").strip.gsub(/[\:\-]+$/, "").strip
+  end
+
+  # Now we have to fix the encoding because lol smart quotes
+  def clean_string(text)
+    text = text.gsub(/[“”]/, "\"").gsub(/[‘’]/, "'").gsub(/–/, "--")
+    text = text.encode('ascii', :invalid => :replace, :undef => :replace)
+    CGI.unescapeHTML(text)
   end
 end
