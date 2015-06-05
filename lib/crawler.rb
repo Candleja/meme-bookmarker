@@ -7,7 +7,9 @@ require 'uri'
 
 class Crawler
 
+  STARTER_TAGS = ["needs_better_tags", "ffa_ficrecs"]
   def crawl(link, debug=true)
+
     if false #debug
       page = Nokogiri::HTML(File.open('examples/sample_source.html'))
     else
@@ -41,7 +43,8 @@ class Crawler
         # post is
         comment_title = reply.parent.parent.parent.css(".comment-title").text.gsub("Re: #{original_title}", "")
         comment_title_tags = comment_title.gsub(/-/, "").split(",").map {|x| x.strip.gsub(/\s/, ".")}
-        
+        comment_id = reply.parent.parent.parent.parent.attribute("id").value.gsub(/comment-/, "")
+
         # now we put it in the html
         recs.each do |rec|
           p "Adding rec: #{rec}"
@@ -57,7 +60,6 @@ class Crawler
           a_node[:tags] = tags
           a_node[:private] = "1"
           # l o fucking l
-          comment_id = reply.parent.parent.parent.parent.attribute("id").value.gsub(/comment-/, "")
           a_node[:original_url] = link + "##{comment_id}"
           a_node.content = title
           dt_node << a_node
@@ -88,7 +90,7 @@ class Crawler
 
     if urls.size == 1
       url = urls.first
-      [{:url => url, :description => content.text.gsub(url, ""), :tags => ["fic"]}]
+      [{:url => url, :description => content.text.gsub(url, ""), :tags => STARTER_TAGS}]
     else 
       parse_multi_rec_comment(content, urls)
     end
@@ -103,7 +105,7 @@ class Crawler
     urls.each do |url|
       # just gets the first text node that contains the url, because lol all the lols
       description =  text.detect{|x| x.include?(url)}
-      result << {:url => url, :description => description.gsub(url, ""), :tags => ["fic"]}
+      result << {:url => url, :description => description.gsub(url, ""), :tags => STARTER_TAGS}
     end
 
     result
@@ -144,7 +146,7 @@ class Crawler
 
     # I can't believe no try in here whyyyy
     # check the post number
-    matched_post = post_title.match(/post ?# ?(\d+)\D/)
+    matched_post = post_title.match(/post ?# ?(\d+)\D/i)
     post_number = matched_post ? matched_post[1] : nil
     tags << "post:#{post_number}" if post_number
 
