@@ -9,7 +9,6 @@ class Crawler
 
   def initialize(opts)
     @export_format = opts[:export_format]
-    @source_url = opts[:link]
     @use_sample_source = opts[:use_sample_source]
     @open_rec_urls = opts[:open_rec_urls]
   end
@@ -26,8 +25,7 @@ class Crawler
     use_sample_source || !open_rec_urls
   end
 
-  def crawl
-    link = @source_url
+  def crawl(link)
     if use_sample_source
       page = Nokogiri::HTML(File.open('examples/sample_source.html'))
     else
@@ -55,11 +53,12 @@ class Crawler
       @recs += Rec.extract_from_comment(reply, rec_options)
     end
 
+    file_name = id_tags.join + (debug ? "-debug" : "")
     case @export_format
     when "html"
-      do_html_export(link, id_tags)
+      do_html_export(file_name, link)
     when "json"
-      do_json_export
+      do_json_export(file_name)
     end
   end
 
@@ -93,10 +92,10 @@ class Crawler
     tags
   end
 
-  def do_html_export(link, id_tags)
+  def do_html_export(file_name, title)
     builder = Nokogiri::HTML::DocumentFragment.parse ""
     Nokogiri::HTML::Builder.with(builder) do |doc|
-      doc.title link
+      doc.title title
     end
 
     list = Nokogiri::XML::Node.new "dl", builder
@@ -112,9 +111,15 @@ class Crawler
 
     builder << list
     
-    file_name = id_tags.join + (debug ? "-debug" : "") + ".html"
-    File.open("results/#{file_name}", "w") do |f|
+
+    File.open("results/#{file_name}.html", "w") do |f|
       f << CGI.unescapeHTML(builder.to_html)
+    end
+  end
+
+  def do_json_export(file_name)    
+    File.open("results/#{file_name}.json", "w") do |f|
+      f << @recs.map(&:to_json)
     end
   end
 end
