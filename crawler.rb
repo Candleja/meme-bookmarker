@@ -1,6 +1,8 @@
 require "./lib/crawler"
 require 'cgi'
 
+use_example_source = false
+open_links = false
 links = [
   "http://fail-fandomanon.dreamwidth.org/141210.html?thread=743342490",
   "http://fail-fandomanon.dreamwidth.org/141532.html?thread=744922076",
@@ -9,5 +11,5 @@ links = [
 crawler = Crawler.new
 
 links.each do |link|
-  crawler.crawl(link, true)
+  crawler.crawl(link, use_example_source, open_links)
 end

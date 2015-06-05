@@ -8,9 +8,10 @@ require 'uri'
 class Crawler
 
   STARTER_TAGS = ["needs_better_tags", "ffa_ficrecs"]
-  def crawl(link, debug=true)
+  def crawl(link, use_sample_source=false, open_rec_urls=false)
+    debug = use_sample_source || !open_rec_urls
 
-    if debug
+    if use_sample_source
       page = Nokogiri::HTML(File.open('examples/sample_source.html'))
     else
       link << "&expand_all=1" unless link =~ /&expand_all=1/
@@ -49,7 +50,7 @@ class Crawler
         recs.each do |rec|
           p "Adding rec: #{rec}"
           url = rec[:url]
-          title = debug ? comment_title : Nokogiri::HTML(open(url.dup)).title.strip rescue comment_title
+          title = open_rec_urls ? (Nokogiri::HTML(open(url.dup)).title.strip rescue comment_title) : comment_title
           tags = (id_tags + rec[:tags] + comment_title_tags).join(",")
 
           # should be able to pull the fandom out of the title too if it's from ao3
@@ -75,7 +76,7 @@ class Crawler
     builder << list
     
     file_name = id_tags.join + (debug ? "-debug" : "") + ".html"
-    File.open(file_name, "w") do |f|
+    File.open("results/#{file_name}", "w") do |f|
       f << CGI.unescapeHTML(builder.to_html)
     end
   end
