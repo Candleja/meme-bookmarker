@@ -1,0 +1,5 @@
+[{"href":"http://www.google.com","description":"my title","extended":"THIS SI A TEST\r\n\r\n\r\n\r\nmultiple lines\r\n\r\nyesssss","shared":"yes","tags":"no tags, comma,separation,converts,to,underscore import_test","time":"2015-06-05 22:49:30 -0700","toread":"yes"},
+{"href":"http:\/\/spnkink-meme.livejournal.com\/","description":"another test","extended":"what if \n\n\n I only use backslash-n? and made it unshared?","shared":"no","tags":"import_test","time":"2015-06-05 22:49:30 -0700", "toread":"yes"},
+{"href":"http:\/\/www.livejournal.com\/","description":"another test","extended":"what about break tags<br><br><br>and some <i>italics</i>?","shared":"no","tags":"import_test","time":"2015-06-05 22:49:30 -0700", "toread":"yes"}
+]
+
