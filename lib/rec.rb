@@ -4,7 +4,7 @@ require 'open_uri_redirections'
 require 'uri'
 require 'json'
 class Rec
-  DEFAULT_TAGS = ["needs_better_tags", "import_test"]
+  DEFAULT_TAGS = ["needs_better_tags"]
 
 
   # Takes a comment node (class .comment-content) and returns 
