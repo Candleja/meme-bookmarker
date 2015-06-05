@@ -64,7 +64,7 @@ class Crawler
 
   def get_id_tags(url, post_title, thread_title)
     post_type = if thread_title =~ /fic rec/i
-      "ficrecs"
+      "ffa_ficrecs"
     else
       nil
     end

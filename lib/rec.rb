@@ -31,7 +31,7 @@ class Rec
 
     urls.map do |url|
       if open_rec_urls
-        title = Nokogiri::HTML(open(url.dup)).title.strip
+        title = Nokogiri::HTML(open(url.dup, :allow_redirections => :safe)).title.strip rescue comment_title
       else
         title = comment_title
       end
@@ -131,7 +131,6 @@ class Rec
   # desert.http://archiveofourown.org/works/90443Sun, basically
   # TODO: add one for ff.n
   def self.clean_detected_url(url)
-
     # Chops off trailing non-digit characters if any are present in an AO3 link
     if url =~ /archiveofourown.org\/(works|series)\/\d+\D+/i
       url.sub!(/(\d)\D+$/, '\1')
@@ -139,13 +138,13 @@ class Rec
       url.sub!(/html[[:alnum]]+$/, 'html')
     end
 
-    url
+    url.gsub(/[\)\.]+$/, "")
   end
 
   # It's common for the link to end in a colon so... yeah
   # Just general cleanup of descriptions to convert it into something 
   # that looks nice.
   def clean_description(text)
-    text.gsub("()", "").gsub("<br>", "\n").strip.chomp(":").chomp("-").strip
+    text.gsub("()", "").gsub("<br>", "\n").gsub(/[:-\s]+$/, "")
   end
 end
