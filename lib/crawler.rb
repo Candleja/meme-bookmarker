@@ -10,7 +10,7 @@ class Crawler
   STARTER_TAGS = ["needs_better_tags", "ffa_ficrecs"]
   def crawl(link, debug=true)
 
-    if false #debug
+    if debug
       page = Nokogiri::HTML(File.open('examples/sample_source.html'))
     else
       link << "&expand_all=1" unless link =~ /&expand_all=1/
@@ -74,7 +74,7 @@ class Crawler
 
     builder << list
     
-    file_name = id_tags.join + ".html"
+    file_name = id_tags.join + (debug ? "-debug" : "") + ".html"
     File.open(file_name, "w") do |f|
       f << CGI.unescapeHTML(builder.to_html)
     end
