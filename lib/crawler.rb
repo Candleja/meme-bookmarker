@@ -117,7 +117,7 @@ class Crawler
 
   def do_json_export(file_name)
     File.open("results/#{file_name}.json", "w") do |f|
-      f << @recs[0..10].map(&:to_hash).to_json
+      f << @recs.map(&:to_hash).to_json
     end
   end
 end

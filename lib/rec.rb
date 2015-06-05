@@ -67,7 +67,7 @@ class Rec
     urls.each do |url|
       # just gets the first text node that contains the url, because lol all the lols
       description =  text.detect{|x| x.include?(url)}
-      result << Rec.new(:url => url, :description => description.gsub(url, ""))
+      result << Rec.new(:url => url, :description => description)
     end
 
     result
@@ -76,7 +76,7 @@ class Rec
   # Tags is an array
   def initialize(params)
     @url = params[:url]
-    @description = clean_description(params[:description])
+    @description = clean_description(params[:description].gsub(@url, ""))
     @tags = params[:tags]
 
     # should be able to pull the fandom out of the title too if it's from ao3
@@ -132,7 +132,7 @@ class Rec
     # There's a bug in the pinboard importer that makes toread => "no" mark as 
     # unread right now
     {
-      :href => url,
+      :href => clean_string(url),
       :description => clean_string(title),
       :extended => clean_string(description),
       :shared => "no",
