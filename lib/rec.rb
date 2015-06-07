@@ -78,15 +78,23 @@ class Rec
     # containing that one URL, and the block of text before it too (unless 
     # there is a URL in it).
     else
-      index_of_url = broken_up_comment.index(description)
+      index_of_url_block = broken_up_comment.index(description)
       # Also grab only the individual URL we want, not all of them
       description = description.split("<br>").detect{|x| x.include?(url)}
 
-      broken_up_comment[0..index_of_url].reverse.each do |x|
+      broken_up_comment[0..index_of_url_block].reverse.each do |x|
         if URI.extract(x, ['http', 'https']).empty?
-          description = x + description
+          description = x + "<br>" + description
         end
       end
+
+      # If there are no other text blocks with links in them, throw the
+      # text after the link block into the description too.
+      unless broken_up_comment[(index_of_url_block+1)..-1].detect{|x| 
+        !URI.extract(x, ['http', 'https']).empty? }
+        description += broken_up_comment[(index_of_url_block+1)..-1].join("<br>")
+      end
+
       description
     end
   end

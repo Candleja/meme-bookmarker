@@ -71,7 +71,7 @@ class Crawler
 
     # I can't believe no try in here whyyyy
     # check the post number -- if no number, then goes by title
-    matched_post = post_title.match(/post ?#? ?(\d+)\D/i)
+    matched_post = post_title.match(/post ?#? ?(\d+)(\D|\Z)/i)
     post_number = matched_post ? matched_post[1] : post_title.gsub("fail_fandomanon | ", "").gsub(/\s/, ".")
     tags << "post:#{post_number}" if post_number
 
@@ -93,6 +93,8 @@ class Crawler
       "ffa_ficrecs"
     elsif thread_title =~ /reverse fic rec/i || thread_title =~ /unsolicited fic rec/i
       "ffa_unsolicted_ficrecs"
+    elsif thread_title =~ /kink/i
+      "ffa_kink"
     elsif thread_title =~ /porn/i || thread_title =~ /hot/i
       "ffa_porn"
     else
