@@ -5,11 +5,10 @@ require 'cgi'
 use_sample_source = false
 open_rec_urls = true
 links = [
-  #"http://fail-fandomanon.dreamwidth.org/141210.html?thread=743342490",
-  #"http://fail-fandomanon.dreamwidth.org/141532.html?thread=744922076"
-  #"http://fail-fandomanon.dreamwidth.org/141763.html?thread=746494915"
-  #http://fail-fandomanon.dreamwidth.org/142079.html?thread=748038399"
-  "http://fail-fandomanon.dreamwidth.org/140986.html?thread=741781690"
+  "http://fail-fandomanon.dreamwidth.org/28493.html?thread=124982349",
+  "http://fail-fandomanon.dreamwidth.org/28393.html?thread=123954665",
+  "http://fail-fandomanon.dreamwidth.org/27872.html?thread=121002720",
+  "http://fail-fandomanon.dreamwidth.org/29368.html?thread=128763064"
 ]
 
 crawler = Crawler.new(:export_format => "json", 

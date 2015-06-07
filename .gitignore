@@ -4,3 +4,4 @@ Gemfile.lock
 pkg/*
 results/*
 results_archive/*
+parsed_urls.txt

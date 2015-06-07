@@ -45,7 +45,7 @@ class Crawler
 
     @recs = []
 
-    #Grab all urls aside from the OP
+    #Grab all urls including from the OP
     comments = page.css(".comment-depth-1 .comment .inner .comment-content")
     
     comments.each do |reply|
@@ -64,19 +64,15 @@ class Crawler
 
 
   def get_id_tags(url, post_title, thread_title)
-    post_type = if thread_title =~ /fic rec/i
-      "ffa_ficrecs"
-    else
-      nil
-    end
+    post_type = get_post_type(thread_title)
 
     tags = []
     tags << post_type if post_type
 
     # I can't believe no try in here whyyyy
-    # check the post number
+    # check the post number -- if no number, then goes by title
     matched_post = post_title.match(/post ?#? ?(\d+)\D/i)
-    post_number = matched_post ? matched_post[1] : nil
+    post_number = matched_post ? matched_post[1] : post_title.gsub("fail_fandomanon | ", "").gsub(/\s/, ".")
     tags << "post:#{post_number}" if post_number
 
     # check the entry id (from the url)
@@ -90,6 +86,18 @@ class Crawler
     tags << "thread:#{thread_id}" if thread_id
 
     tags
+  end
+
+  def get_post_type(thread_title)
+    if thread_title =~ /fic rec/i
+      "ffa_ficrecs"
+    elsif thread_title =~ /reverse fic rec/i || thread_title =~ /unsolicited fic rec/i
+      "ffa_unsolicted_ficrecs"
+    elsif thread_title =~ /porn/i || thread_title =~ /hot/i
+      "ffa_porn"
+    else
+      "ffa_informal"
+    end
   end
 
   def do_html_export(file_name, title)

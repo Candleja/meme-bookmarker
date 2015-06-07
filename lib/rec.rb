@@ -19,7 +19,12 @@ class Rec
     # Convert the title of the comment into tags
     # The original_title gsub won't work if a nonnie changes the comment from what the first
     # post is
-    comment_title = content.parent.parent.parent.css(".comment-title").text.gsub("Re: #{original_title}", "")
+    comment_title = content.parent.parent.parent.css(".comment-title").text
+    comment_title = if first_depth_replies?(initial_tags)
+                      comment_title.gsub("Re: #{original_title}", "") 
+                    else
+                      comment_title.gsub("Re: ", "")
+                    end
     comment_title_tags = comment_title.gsub(/-/, "").split(",").map {|x| x.strip.gsub(/\s/, ".")}
     comment_css_id = content.parent.parent.parent.parent.attribute("id").value.gsub(/comment-/, "")
     comment_html = content.inner_html.gsub(/<\/?wbr>/, "")
@@ -86,8 +91,16 @@ class Rec
     end
   end
 
+  # If the first reply to the thread OP is a request, we don't want
+  # to keep the OP's original thread title, but if the OP is itself
+  # a request, we keep it. This is usually the case for anything
+  # that isn't the ffa_ficrecs post type.
+  def self.first_depth_replies?(initial_tags)
+    return initial_tags.detect{|x| x == "ffa_ficrecs"}
+  end
+
   def self.debug_this_comment?(text)
-    text.include?("Metallic_Sweet") || text.include?("three-wishes-tw")
+    return false #text.include?("Metallic_Sweet") || text.include?("three-wishes-tw")
   end
 
   # Tags is an array
