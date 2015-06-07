@@ -24,7 +24,7 @@ class Rec
     comment_css_id = content.parent.parent.parent.parent.attribute("id").value.gsub(/comment-/, "")
     comment_html = content.inner_html.gsub(/<\/?wbr>/, "")
 
-    urls = URI.extract(comment_html, ['http'])
+    urls = URI.extract(comment_html, ['http', 'https'])
 
     urls = urls.map do |x|
       x = clean_detected_url(x)
@@ -45,8 +45,7 @@ class Rec
       if urls.size == 1
         description = comment_html.gsub(url, "")
       else
-        broken_up_comment = comment_html.split("<br><br>")
-        description = broken_up_comment.detect{|x| x.include?(url)}
+        description = extract_description_for_url(comment_html, url)
       end
 
       description += "\r\n\r\n#{comment_css_id}"
@@ -58,19 +57,37 @@ class Rec
     end
   end
 
-  def self.parse_multi_rec_comment(content, urls)
-    result = []
+  # Some users separate their recs with a double-break, while others
+  # choose not to, and we have to account for each case.
+  def self.extract_description_for_url(comment_html, url)
+    broken_up_comment = comment_html.split("<br><br>")
 
-    text = content.inner_html.gsub(/<\/?wbr>/, "").split("<br>")
-    #binding.pry if content.text =~ /I liked this one/
+   
+    description = broken_up_comment.detect{|x| x.include?(url)}
 
-    urls.each do |url|
-      # just gets the first text node that contains the url, because lol all the lols
-      description =  text.detect{|x| x.include?(url)}
-      result << Rec.new(:url => url, :description => description)
+    # If there's only one URL when we use a double-break, then let's
+    # keep that.
+    if URI.extract(description, ['http', 'https']).size == 1
+      description
+    # Otherwise, someone posted a list of URLs, so we want only the block
+    # containing that one URL, and the block of text before it too (unless 
+    # there is a URL in it).
+    else
+      index_of_url = broken_up_comment.index(description)
+      # Also grab only the individual URL we want, not all of them
+      description = description.split("<br>").detect{|x| x.include?(url)}
+
+      broken_up_comment[0..index_of_url].reverse.each do |x|
+        if URI.extract(x, ['http', 'https']).empty?
+          description = x + description
+        end
+      end
+      description
     end
+  end
 
-    result
+  def self.debug_this_comment?(text)
+    text.include?("Metallic_Sweet") || text.include?("three-wishes-tw")
   end
 
   # Tags is an array

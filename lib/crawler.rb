@@ -27,7 +27,7 @@ class Crawler
 
   def crawl(link)
     if use_sample_source
-      page = Nokogiri::HTML(File.open('examples/sample_source.html'))
+      page = Nokogiri::HTML(File.open('examples/sample_comment_parsing.html'))
     else
       link << "&expand_all=1" unless link =~ /&expand_all=1/
       page = Nokogiri::HTML(open(link.dup))
@@ -75,7 +75,7 @@ class Crawler
 
     # I can't believe no try in here whyyyy
     # check the post number
-    matched_post = post_title.match(/post ?# ?(\d+)\D/i)
+    matched_post = post_title.match(/post ?#? ?(\d+)\D/i)
     post_number = matched_post ? matched_post[1] : nil
     tags << "post:#{post_number}" if post_number
 
