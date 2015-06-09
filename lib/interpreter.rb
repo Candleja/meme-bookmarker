@@ -145,6 +145,8 @@ class Interpreter
       url.sub!(/(\d)\D+$/, '\1')
     elsif url =~ /livejournal.com\/\d+.html[[:alnum]]+/i
       url.sub!(/html[[:alnum]]+$/, 'html')
+    elsif url =~ /fanfiction.net/
+      url.sub!(/http:/, "https:")
     end
 
     url.gsub(/[\)\.\,]+$/, "")
