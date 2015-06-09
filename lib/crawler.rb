@@ -11,6 +11,8 @@ class Crawler
     @export_format = opts[:export_format]
     @use_sample_source = opts[:use_sample_source]
     @open_rec_urls = opts[:open_rec_urls]
+    @limit = opts[:limit]
+    @interpreter = Interpreter.new(opts)
   end
 
   def use_sample_source
@@ -21,8 +23,12 @@ class Crawler
     @open_rec_urls
   end
 
+  def limit
+    @limit
+  end
+
   def debug
-    use_sample_source || !open_rec_urls
+    use_sample_source || !open_rec_urls || limit
   end
 
   def crawl(link)
@@ -50,7 +56,12 @@ class Crawler
     
     comments.each do |reply|
       # An array of Rec objects with the relevant data
-      @recs += Rec.extract_from_comment(reply, rec_options)
+      @recs += @interpreter.extract_recs_from_comment(reply, rec_options)
+
+      if limit and @recs.size >= limit
+        @recs = @recs[0..limit-1]
+        break
+      end
     end
 
     file_name = id_tags.join + (debug ? "-debug" : "")
@@ -60,6 +71,8 @@ class Crawler
     when "json"
       do_json_export(file_name)
     end
+
+    @interpreter.flush_metadata_updates
   end
 
 
