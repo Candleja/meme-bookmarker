@@ -1,7 +1,9 @@
 ---
 name: rating
-General%20Audiences: rating:G
-Teen%20And%20Up%20Audiences: rating:PG-13
-Teen And Up Audiences: rating:PG-13
-Mature: rating:R
-General Audiences: rating:G
+General%20Audiences: rating:g
+Teen%20And%20Up%20Audiences: rating:pg-13
+Teen And Up Audiences: rating:pg-13
+Mature: rating:r
+General Audiences: rating:g
+Not Rated: rating:unrated
+Explicit: rating:nc-17

@@ -8,7 +8,7 @@ bundle install
 
 TODO:
 
-Make it export as json instead of html, html is so fugly -- turn Recs into a class and give it to_json and to_html_node methods, make the crawler be a proper class too (with ivars and instantiation and stuffs)
+make the ao3 parser do pairing:none for gen fics?
 
 Maybe make a javascript bookmarklet or other thing that pulls tags from ao3 pages (rating, fandom, character, tags) and copies them to clipboard or something
 
@@ -17,4 +17,3 @@ Maybe make a javascript bookmarklet or other thing that pulls tags from ao3 page
 
  hard to get titles when you have to click through the "view adult content" url and stuff
 
- Having mysterious issues with importing too -- looks like it can't handle smart quotes

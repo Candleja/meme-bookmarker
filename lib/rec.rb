@@ -41,7 +41,7 @@ class Rec
     dt_node = Nokogiri::XML::Node.new "dt", builder
     a_node =  Nokogiri::XML::Node.new "a", builder
     a_node[:href] = url
-    a_node[:tags] = tags.join(" ")
+    a_node[:tags] = tags.sort.join(" ")
     a_node[:private] = "1"
     # l o fucking l
     a_node.content = title
@@ -73,7 +73,7 @@ class Rec
       :description => clean_string(title),
       :extended => clean_string(description),
       :shared => "no",
-      :tags => clean_string(tags.join(" ")),
+      :tags => clean_string(tags.sort.join(" ")),
       :time => Time.now.to_s,
       :toread => "yes"
     }
@@ -85,7 +85,7 @@ class Rec
   # Just general cleanup of descriptions to convert it into something 
   # that looks nice.
   def clean_description(text)
-    desc = text.gsub("()", "").gsub("<br>", "\r\n").strip.gsub(/[\:\-]+$/, "").strip
+    desc = text.gsub("()", "").gsub("<br>", "\r\n").strip.gsub(/[\:\-]+$\Z/, "").strip
   end
 
   # Now we have to fix the encoding because lol smart quotes

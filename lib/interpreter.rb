@@ -54,7 +54,9 @@ class Interpreter
       tags_from_metadata += parse_trope_tags(metadata_parser)
       tags_from_metadata += parse_length_tags(metadata_parser)
       tags_from_metadata += parse_rating_tags(metadata_parser)
-      #tags_from_metadata += parse_collection_tags(metadata_parser) 
+      #tags_from_metadata += parse_collection_tags(metadata_parser)
+
+      user_summary        = parse_user_summary(metadata_parser) 
 
       # If there's one rec, include the entire comment. Otherwise, get 
       # the paragraph the comment is in (paragraph determined by a double
@@ -66,8 +68,7 @@ class Interpreter
         description = extract_description_for_url(comment_html, url)
       end
 
-      description += "\r\n\r\n#{comment_css_id}"
-      binding.pry
+      description += "\r\n\r\n#{user_summary}\r\n\r\n#{comment_css_id}"
       rec = Rec.new(:url => access_url, 
               :description => description, 
               :tags => initial_tags + [comment_title_tag] + tags_from_metadata, 
@@ -191,6 +192,10 @@ class Interpreter
 
   def parse_collection_tags(parser = nil)
     parser.try(:collection_tags) || []
+  end
+
+  def parse_user_summary(parser = nil)
+    parser.try(:get_user_summary) || ""
   end
 
   def flush_metadata_updates

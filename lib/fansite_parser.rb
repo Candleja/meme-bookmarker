@@ -22,14 +22,14 @@ class FansiteParser
 
   def do_lookup(mapping, raw_tag)
     tag = mapping[raw_tag]
+    name = mapping["name"]
 
     # Allow some found tags to never show, such as (one-sided) relationships or whatever
-    if tag == "hide"
+    if tag == "#{name}:hide"
       return nil
     end
 
     if !tag && @ask_human
-      name = mapping["name"]
       p "Human input requested! Type xx to save tag preferences to file, yy to stop asking for human advice"
       p "Type hide to block the tag from requesting input again"
       p "Please interpret for #{name} (don't prepend #{name} to the answer): #{URI.unescape(raw_tag)}"
@@ -47,6 +47,10 @@ class FansiteParser
     end
 
     tag
+  end
+
+  def get_user_summary
+    return ""
   end
 
   def fandom_tags
@@ -77,7 +81,7 @@ class FansiteParser
     raw_word_count = get_raw_word_count
 
     tag = if raw_word_count == 0
-            ".length_unknown"
+            ".length:unknown"
           elsif raw_word_count < 1000
             "length:0-1k"
           elsif raw_word_count < 5000

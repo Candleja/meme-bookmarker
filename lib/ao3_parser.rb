@@ -6,6 +6,16 @@ class AO3Parser < FansiteParser
     "reference/ao3/"
   end
 
+  def get_user_summary
+    return "" if needs_login?
+
+    first_summary_type_block = @page.css("blockquote.userstuff").first
+
+    if first_summary_type_block
+      "Author Summary:\n" + first_summary_type_block.inner_html.gsub(/<p>/, "\n").gsub(/<\/p>/, "").strip
+    end
+  end
+
   def get_raw_fandom_tags
     all_fandom_tags = @page.css(".fandoms .tag, .fandom .tag").map do |x| 
       tag_url = x.attribute("href").value
@@ -29,9 +39,9 @@ class AO3Parser < FansiteParser
   def get_raw_word_count
     num = 0
 
-    if series? or individual_work?
+    if series? or individual_work? && !needs_login?
       word_index = @page.css("dl.stats dt").map(&:text).index("Words:")
-      word_count = @page.css("dl.stats dd").map(&:text)[word_index]
+      word_count = @page.css("dl.stats dd").map(&:text)[word_index] rescue binding.pry
 
       return 0 unless word_count
 
@@ -46,17 +56,16 @@ class AO3Parser < FansiteParser
       return nil
     end
 
-    if series?
-      all_rating_tags = @page.css(".rating").map do |x| 
-        x.attribute("title").value        
-      end.uniq
-    elsif individual_work?
-      all_rating_tags = @page.css(".rating .tag").map do |x| 
-        tag_url = x.attribute("href").value
-        tag = get_tag_from_tag_url(tag_url)
-      end.uniq
+    tagged_ratings = @page.css(".rating .tag").map do |x| 
+      tag_url = x.attribute("href").value
+      tag = get_tag_from_tag_url(tag_url)
     end
 
+    tagged_ratings += @page.css(".rating").map do |x| 
+      x.attribute("title").try(:value )
+    end
+
+    tagged_ratings.compact.uniq
 
   end
 
@@ -75,6 +84,10 @@ class AO3Parser < FansiteParser
 
   def get_tag_from_tag_url(url)
     url.match(/\/tags\/(.+)\/works/)[1]
+  end
+
+  def needs_login?
+    @page.css("#new_user_session").size > 1
   end
 
 end
