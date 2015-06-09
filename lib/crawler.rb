@@ -58,7 +58,7 @@ class Crawler
       # An array of Rec objects with the relevant data
       @recs += @interpreter.extract_recs_from_comment(reply, rec_options)
 
-      if limit and @recs.size >= limit
+      if limit && (@recs.size >= limit)
         @recs = @recs[0..limit-1]
         break
       end

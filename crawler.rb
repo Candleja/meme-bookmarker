@@ -24,7 +24,7 @@ end
 
 use_sample_source = false
 open_rec_urls = true
-limit = 12
+limit = nil
 ask_human = true
 links = [
   "http://fail-fandomanon.dreamwidth.org/141210.html?thread=743342490"

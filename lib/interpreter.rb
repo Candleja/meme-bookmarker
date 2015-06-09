@@ -36,9 +36,11 @@ class Interpreter
 
     urls.map do |url|
       if open_rec_urls
-        page = Nokogiri::HTML(open(url.dup, :allow_redirections => :safe))
+        access_url = get_access_url(url)
+        page = Nokogiri::HTML(open(access_url.dup, :allow_redirections => :safe))
         metadata_parser = get_metadata_parser(page, url)
       else
+        access_url = url
         page = nil
         metadata_parser = nil
       end
@@ -65,8 +67,8 @@ class Interpreter
       end
 
       description += "\r\n\r\n#{comment_css_id}"
-
-      rec = Rec.new(:url => url, 
+      binding.pry
+      rec = Rec.new(:url => access_url, 
               :description => description, 
               :tags => initial_tags + [comment_title_tag] + tags_from_metadata, 
               :title => title)
@@ -145,11 +147,19 @@ class Interpreter
       url.sub!(/(\d)\D+$/, '\1')
     elsif url =~ /livejournal.com\/\d+.html[[:alnum]]+/i
       url.sub!(/html[[:alnum]]+$/, 'html')
-    elsif url =~ /fanfiction.net/
-      url.sub!(/http:/, "https:")
     end
 
-    url.gsub(/[\)\.\,]+$/, "")
+    url.gsub!(/[\)\.\,]+$/, "")
+    url
+  end
+
+  # We can't modify the URL before we gsub it 
+  def get_access_url(url)
+    if url =~ /fanfiction.net/
+      url.sub(/http:/, "https:")
+    else
+      url
+    end
   end
 
   def get_metadata_parser(page, url)
