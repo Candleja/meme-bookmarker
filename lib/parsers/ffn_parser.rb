@@ -11,15 +11,13 @@ class FFNParser < FansiteParser
 
   def get_raw_fandom_tags
     if individual_work?
-      [@page.css(".lc-left a").last.text]
+      return [@page.css(".lc-left a").last.text]
     end
 
     []
   end
 
   def get_raw_pairing_tags
-    binding.pry
-
     if individual_work?
       characters = grey_metadata_bar.text.split(" - ")[3]
 
@@ -54,7 +52,7 @@ class FFNParser < FansiteParser
 
   def get_raw_rating_tags
     if individual_work?
-      [grey_metadata_bar.css("a[target='rating']").text]
+      return [grey_metadata_bar.css("a[target='rating']").text]
     end
 
     []

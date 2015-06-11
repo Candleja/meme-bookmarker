@@ -12,6 +12,7 @@ class Crawler
     @use_sample_source = opts[:use_sample_source]
     @open_rec_urls = opts[:open_rec_urls]
     @limit = opts[:limit]
+    @source_filter = opts[:source_filter]
     @interpreter = Interpreter.new(opts)
   end
 
@@ -27,8 +28,12 @@ class Crawler
     @limit
   end
 
+  def source_filter
+    @source_filter
+  end
+
   def debug
-    use_sample_source || !open_rec_urls || limit
+    use_sample_source || !open_rec_urls || limit || source_filter
   end
 
   def crawl(link)

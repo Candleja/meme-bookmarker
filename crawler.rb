@@ -27,7 +27,7 @@ limit = nil
 ask_human = true
 source_filter = nil
 links = [
-  "http://fail-fandomanon.dreamwidth.org/141532.html?thread=744922076"
+  "http://fail-fandomanon.dreamwidth.org/141763.html?thread=746494915"
 ]
 
 crawler = Crawler.new(:export_format => "json", 

@@ -55,11 +55,11 @@ class Interpreter
 
       tags_from_metadata = []
 
-      tags_from_metadata += parse_fandom_tags(metadata_parser)
-      tags_from_metadata += parse_pairing_tags(metadata_parser)
-      tags_from_metadata += parse_trope_tags(metadata_parser)
-      tags_from_metadata += parse_length_tags(metadata_parser)
-      tags_from_metadata += parse_rating_tags(metadata_parser)
+      tags_from_metadata += parse_fandom_tags(metadata_parser) rescue binding.pry
+      tags_from_metadata += parse_pairing_tags(metadata_parser) rescue binding.pry
+      tags_from_metadata += parse_trope_tags(metadata_parser) rescue binding.pry
+      tags_from_metadata += parse_length_tags(metadata_parser) rescue binding.pry
+      tags_from_metadata += parse_rating_tags(metadata_parser) rescue binding.pry
       #tags_from_metadata += parse_collection_tags(metadata_parser)
 
       user_summary        = parse_user_summary(metadata_parser) 
@@ -175,6 +175,8 @@ class Interpreter
   def get_access_url(url)
     if url =~ /fanfiction.net/
       url.sub(/http:/, "https:")
+    elsif url =~ /archiveofourown.org/
+      url.sub(/https:/, "http:")
     else
       url
     end
@@ -220,6 +222,7 @@ class Interpreter
 
   def flush_metadata_updates
     @ao3_parser.flush_metadata_updates
+    @ffn_parser.flush_metadata_updates
   end
 
 end

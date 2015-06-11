@@ -37,6 +37,8 @@ class AO3Parser < FansiteParser
       @page.css(".category .text").map do |x|
         tag = x.text
       end.uniq
+    else
+      []
     end
 
     all_pairing_tags + category_tags
@@ -65,7 +67,7 @@ class AO3Parser < FansiteParser
 
   def get_raw_rating_tags
     unless series? or individual_work?
-      return nil
+      return []
     end
 
     tagged_ratings = @page.css(".rating .tag").map do |x| 
@@ -87,6 +89,10 @@ class AO3Parser < FansiteParser
 
   def individual_work?
     @url.match(/archiveofourown.org\/works\/\d+/)
+  end
+
+  def tag_page?
+    @url.match(/archiveofourown.org\/tags\/\d+/)
   end
 
   def get_tag_from_tag_url(url)

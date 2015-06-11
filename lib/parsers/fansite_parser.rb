@@ -31,19 +31,29 @@ class FansiteParser
     end
 
     if !tag && @ask_human
+      p "URL is #{@url}"
       p "Human input requested! Type xx to save tag preferences to file, yy to stop asking for human advice"
       p "Type hide to block the tag from requesting input again. Separate multiple tags with a space. "
       p "Please interpret for #{name} (don't prepend #{name} to the answer): #{URI.unescape(raw_tag)}"
       answer = gets.chomp
+
+      while (answer == "xx")
+        flush_metadata_updates
+        answer = gets.chomp
+      end
+
       unless answer.empty?
         if answer == "yy"
           @ask_human = false
-        elsif answer == "xx"
-          flush_metadata_updates
         else
           tags = answer.split(" ").map{|x| "#{name}:#{x}" }
-          tag = "#{name}:#{answer}"
-          tag = mapping[raw_tag] = (tags.size == 1) ? tags.first : tags
+          result = if tags.size == 1
+            tags.first
+          else
+            tags
+          end
+          mapping[raw_tag] = result
+          return result
         end
       end
     end
