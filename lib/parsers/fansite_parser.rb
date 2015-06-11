@@ -20,6 +20,7 @@ class FansiteParser
     raise "Set me!"
   end
 
+  # Looks up from the reference file 
   def do_lookup(mapping, raw_tag)
     tag = mapping[raw_tag]
     name = mapping["name"]
@@ -31,7 +32,7 @@ class FansiteParser
 
     if !tag && @ask_human
       p "Human input requested! Type xx to save tag preferences to file, yy to stop asking for human advice"
-      p "Type hide to block the tag from requesting input again"
+      p "Type hide to block the tag from requesting input again. Separate multiple tags with a space. "
       p "Please interpret for #{name} (don't prepend #{name} to the answer): #{URI.unescape(raw_tag)}"
       answer = gets.chomp
       unless answer.empty?
@@ -40,8 +41,9 @@ class FansiteParser
         elsif answer == "xx"
           flush_metadata_updates
         else
+          tags = answer.split(" ").map{|x| "#{name}:#{x}" }
           tag = "#{name}:#{answer}"
-          mapping[raw_tag] = tag
+          tag = mapping[raw_tag] = (tags.size == 1) ? tags.first : tags
         end
       end
     end
@@ -57,7 +59,7 @@ class FansiteParser
     raw_tags = get_raw_fandom_tags
     tags = raw_tags.map do |t|
       do_lookup(@fandom_mapping, t)
-    end.uniq.compact
+    end.flatten.uniq.compact
 
     tags << ".fandom:unknown" if tags.empty?
     tags
@@ -67,7 +69,7 @@ class FansiteParser
     raw_tags = get_raw_pairing_tags
     tags = raw_tags.map do |t|
       do_lookup(@pairing_mapping, t)
-    end.uniq.compact
+    end.flatten.uniq.compact
 
     tags << ".pairing:unknown" if tags.empty?
     tags
@@ -104,12 +106,13 @@ class FansiteParser
     raw_tags = get_raw_rating_tags
     tags = raw_tags.map do |t|
       do_lookup(@rating_mapping, t)
-    end.uniq.compact
+    end.flatten.uniq.compact
 
     tags << ".rating:unknown" if tags.empty?
     tags
   end
 
+  #Not implemented
   def collection_tags
     []
   end

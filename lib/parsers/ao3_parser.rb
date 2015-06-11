@@ -1,5 +1,4 @@
 # Takes an opened AO3 page and parses the data
-require './lib/fansite_parser'
 class AO3Parser < FansiteParser
 
   def reference_folder
@@ -80,11 +79,6 @@ class AO3Parser < FansiteParser
 
     tagged_ratings.compact.uniq
 
-  end
-
-  # Let's not do collections for now either
-  def collection_tags
-    return []
   end
 
   def series?

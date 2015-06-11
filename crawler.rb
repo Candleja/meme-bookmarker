@@ -1,4 +1,3 @@
-require "./lib/ao3_parser"
 require "./lib/crawler"
 require "./lib/rec"
 require "./lib/interpreter"
@@ -26,15 +25,17 @@ use_sample_source = false
 open_rec_urls = true
 limit = nil
 ask_human = true
+source_filter = nil
 links = [
-  "http://fail-fandomanon.dreamwidth.org/141210.html?thread=743342490"
+  "http://fail-fandomanon.dreamwidth.org/141532.html?thread=744922076"
 ]
 
 crawler = Crawler.new(:export_format => "json", 
                       :use_sample_source => use_sample_source,
                       :open_rec_urls => open_rec_urls,
                       :limit => limit,
-                      :ask_human => ask_human)
+                      :ask_human => ask_human,
+                      :source_filter => source_filter)
 
 links.each do |link|
   p "Crawling #{link} now!"

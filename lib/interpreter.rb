@@ -1,7 +1,13 @@
+require './lib/parsers/fansite_parser'
+require './lib/parsers/ao3_parser'
+require './lib/parsers/ffn_parser'
 class Interpreter
 
   def initialize(opts={})
+    @source_filter = opts[:source_filter] # To only parse recs from one source
+
     @ao3_parser = AO3Parser.new({:ask_human => opts[:ask_human]})
+    @ffn_parser = FFNParser.new({:ask_human => opts[:ask_human]})
   end
 
   # Takes a comment node (class .comment-content) and returns 
@@ -131,10 +137,21 @@ class Interpreter
   end
 
   def restricted_domain?(url)
+
+    # The source filter blocks all URLs that are not the given source
+    if @source_filter
+      case @source_filter
+      when :ffn
+        return url !~ /fanfiction.net/
+      when :ao3
+        return url !~ /archiveofourown/
+      end
+    end
+
     [/fail-fandomanon/i,
     /youtube\.com/i].each do |blocked_domain|
       return true if url =~ blocked_domain
-    end 
+    end
     false
   end
 
@@ -167,6 +184,9 @@ class Interpreter
     if url =~ /archiveofourown.org/
       @ao3_parser.set_page_and_url(page, url)
       @ao3_parser
+    elsif url =~ /fanfiction.net/
+      @ffn_parser.set_page_and_url(page, url)
+      @ffn_parser
     end
   end
 

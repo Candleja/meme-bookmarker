@@ -67,3 +67,17 @@ Jim%20Ellison*s*Blair%20Sandburg: pairing:jimellison/blairsandburg
 Blair%20Sandburg*s*Undisclosed%20Female%20Character: pairing:hide
 James%20Norrington*s*Jack%20Sparrow: pairing:jamesnorrington/jacksparrow
 Elizabeth%20Swann*s*Will%20Turner: pairing:elizabethswann/willturner
+M/M: pairing:m/m
+Gen: pairing:none
+F/M, Gen, M/M:
+- pairing:f/m
+- pairing:m/m
+Gen, F/M, M/M:
+- pairing:f/m
+- pairing:m/m
+F/M, M/M, Multi:
+- pairing:f/m
+- pairing:m/m
+F/M, Gen: pairing:f/m
+M*s*M: pairing:m/m
+F/M: pairing:f/m
