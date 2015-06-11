@@ -24,7 +24,7 @@ class AO3Parser < FansiteParser
   end
 
   def get_raw_pairing_tags
-    all_pairing_tags = @page.css(".relationships .tag, .relationship .tag").map do |x| 
+    all_pairing_tags = @page.css(".relationships .tag, .relationship .tag, .category .tag").map do |x| 
       tag_url = x.attribute("href").value
       tag = get_tag_from_tag_url(tag_url)
     end.uniq

@@ -1,7 +1,7 @@
 require 'yaml'
 require 'uri'
 class FansiteParser
-  def initialize(opts)
+  def initialize(opts={})
     # Loads a mapping of AO3 tag -> pinboard tag
     @ask_human = opts[:ask_human]
     @fandom_mapping = YAML.load_file(File.open(File.join(reference_folder, "fandoms.yml")))
