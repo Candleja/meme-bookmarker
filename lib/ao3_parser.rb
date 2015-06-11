@@ -24,10 +24,23 @@ class AO3Parser < FansiteParser
   end
 
   def get_raw_pairing_tags
-    all_pairing_tags = @page.css(".relationships .tag, .relationship .tag, .category .tag").map do |x| 
+    all_pairing_tags = @page.css(".relationships .tag, .relationship .tag").map do |x| 
       tag_url = x.attribute("href").value
       tag = get_tag_from_tag_url(tag_url)
     end.uniq
+
+    category_tags = if individual_work?
+      @page.css(".category .tag").map do |x|
+        tag_url = x.attribute("href").value
+        tag = get_tag_from_tag_url(tag_url)
+      end.uniq
+    elsif series?
+      @page.css(".category .text").map do |x|
+        tag = x.text
+      end.uniq
+    end
+
+    all_pairing_tags + category_tags
   end
   
   # Let's not auto-parse tropes for now.
