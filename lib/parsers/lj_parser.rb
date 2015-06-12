@@ -102,6 +102,7 @@ class LJParser < FansiteParser
   # The first chunk of the post, where there might be some info if author puts
   # a heading
   def post_head
+    # might also be called asset_body
     @page.css(".entry-content").children[0..50].to_html.split("<br>").map{|x| x.gsub(%r{</?[^>]+?>}, '')}
   end
 

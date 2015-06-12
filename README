@@ -13,9 +13,10 @@ Maybe make a javascript bookmarklet or other thing that pulls tags from ao3 page
 
 
 livejournal fandom (and other) parser? recognize kinkmemes, at least...
+lj posts have so many stupid style differences
+
 
  BUGS
 
 
- hard to get titles when you have to click through the "view adult content" url and stuff
-
+passing through a cookie like a true bandit

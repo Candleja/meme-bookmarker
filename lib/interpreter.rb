@@ -38,7 +38,7 @@ class Interpreter
     comment_html = content.inner_html.gsub(/<\/?wbr>/, "")
 
 
-    comment_identifier = show_full_comment_url ? comment_css_id : comment_url
+    comment_identifier = show_full_comment_url ? comment_url : comment_css_id
 
     urls = URI.extract(comment_html, ['http', 'https'])
 
@@ -50,7 +50,13 @@ class Interpreter
     urls.map do |url|
       if open_rec_urls
         access_url = get_access_url(url)
-        page = Nokogiri::HTML(open(access_url.dup, :allow_redirections => :safe))
+        begin
+          page = Nokogiri::HTML(open(access_url.dup, :allow_redirections => :safe))
+        rescue Exception => e
+          p "Error accessing url #{url}!"
+          p e.message
+          next
+        end
         metadata_parser = get_metadata_parser(page, url)
       else
         access_url = url
@@ -87,7 +93,7 @@ class Interpreter
               :tags => initial_tags + [comment_title_tag] + tags_from_metadata, 
               :title => title)
 
-    end
+    end.compact
   end
 
   # Some users separate their recs with a double-break, while others
@@ -199,7 +205,7 @@ class Interpreter
     elsif url =~ /livejournal.com/
       @lj_parser
     end
-    parser.set_page_and_url(page, url)
+    parser.set_page_and_url(page, url) if parser
     parser
   end
 

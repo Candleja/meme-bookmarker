@@ -53,7 +53,7 @@ class FansiteParser
             tags
           end
           mapping[raw_tag] = result if save_result
-          return result
+          return result unless result == "#{name}:hide"
         end
       end
     end
