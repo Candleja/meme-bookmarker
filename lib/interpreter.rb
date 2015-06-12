@@ -1,6 +1,7 @@
 require './lib/parsers/fansite_parser'
 require './lib/parsers/ao3_parser'
 require './lib/parsers/ffn_parser'
+require './lib/parsers/lj_parser'
 class Interpreter
 
   def initialize(opts={})
@@ -8,6 +9,7 @@ class Interpreter
 
     @ao3_parser = AO3Parser.new({:ask_human => opts[:ask_human]})
     @ffn_parser = FFNParser.new({:ask_human => opts[:ask_human]})
+    @lj_parser = LJParser.new({:ask_human => opts[:ask_human]})
   end
 
   # Takes a comment node (class .comment-content) and returns 
@@ -150,6 +152,8 @@ class Interpreter
         return url !~ /fanfiction.net/
       when :ao3
         return url !~ /archiveofourown/
+      when :lj
+        return url !~ /livejournal.com/
       end
     end
 
@@ -188,13 +192,15 @@ class Interpreter
   end
 
   def get_metadata_parser(page, url)
-    if url =~ /archiveofourown.org/
-      @ao3_parser.set_page_and_url(page, url)
+    parser = if url =~ /archiveofourown.org/
       @ao3_parser
     elsif url =~ /fanfiction.net/
-      @ffn_parser.set_page_and_url(page, url)
       @ffn_parser
+    elsif url =~ /livejournal.com/
+      @lj_parser
     end
+    parser.set_page_and_url(page, url)
+    parser
   end
 
   def parse_fandom_tags(parser = nil)

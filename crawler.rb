@@ -25,10 +25,10 @@ use_sample_source = false
 open_rec_urls = true
 limit = nil
 ask_human = true
-source_filter = nil
+source_filter = nil #:lj
 show_full_comment_url = true
 links = [
-  "http://fail-fandomanon.dreamwidth.org/142079.html?thread=748038399"
+  "http://fail-fandomanon.dreamwidth.org/140986.html?thread=741781690"
 ]
 
 crawler = Crawler.new(:export_format => "json", 
