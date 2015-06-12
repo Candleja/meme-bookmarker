@@ -6,3 +6,4 @@ results/*
 results_archive/*
 parsed_urls.txt
 export_archive/*
+config.yml

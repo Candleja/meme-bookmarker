@@ -34,11 +34,6 @@ class FFNParser < FansiteParser
     end
   end
   
-  # Let's not auto-parse tropes for now.
-  def get_raw_trope_tags
-    return []
-  end
-
   # Returns an int
   def get_raw_word_count
     word_count = grey_metadata_bar.text.match(/Words: ([\d,]+) -/).try(:[], 1)

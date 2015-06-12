@@ -13,24 +13,11 @@ class Crawler
     @open_rec_urls = opts[:open_rec_urls]
     @limit = opts[:limit]
     @source_filter = opts[:source_filter]
+    @show_full_comment_url = opts[:show_full_comment_url]
+    @config = YAML.load_file(File.open("config.yml"))
     @interpreter = Interpreter.new(opts)
   end
 
-  def use_sample_source
-    @use_sample_source
-  end
-
-  def open_rec_urls
-    @open_rec_urls
-  end
-
-  def limit
-    @limit
-  end
-
-  def source_filter
-    @source_filter
-  end
 
   def debug
     use_sample_source || !open_rec_urls || limit || source_filter
@@ -41,7 +28,7 @@ class Crawler
       page = Nokogiri::HTML(File.open('examples/sample_comment_parsing.html'))
     else
       link << "&expand_all=1" unless link =~ /&expand_all=1/
-      page = Nokogiri::HTML(open(link.dup))
+      page = Nokogiri::HTML(open(link.dup, "Cookie" => @config["cookie"]))
     end
 
     # Data about the source post
@@ -51,7 +38,8 @@ class Crawler
 
     rec_options = {:open_rec_urls => open_rec_urls, 
                    :original_title => original_title,
-                   :initial_tags => id_tags}
+                   :initial_tags => id_tags,
+                   :show_full_comment_url => show_full_comment_url}
 
 
     @recs = []
@@ -147,5 +135,26 @@ class Crawler
     File.open("results/#{file_name}.json", "w") do |f|
       f << @recs.map(&:to_hash).to_json
     end
+  end
+
+
+  def use_sample_source
+    @use_sample_source
+  end
+
+  def open_rec_urls
+    @open_rec_urls
+  end
+
+  def limit
+    @limit
+  end
+
+  def source_filter
+    @source_filter
+  end
+
+  def show_full_comment_url
+    @show_full_comment_url
   end
 end

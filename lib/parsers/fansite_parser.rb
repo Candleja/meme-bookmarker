@@ -52,13 +52,17 @@ class FansiteParser
           else
             tags
           end
-          mapping[raw_tag] = result
+          mapping[raw_tag] = result if save_result
           return result
         end
       end
     end
 
     tag
+  end
+
+  def save_result
+    true
   end
 
   def get_user_summary

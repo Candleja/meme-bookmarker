@@ -18,6 +18,7 @@ class Interpreter
     open_rec_urls = opts[:open_rec_urls]
     original_title = opts[:original_title] || ""
     initial_tags = opts[:initial_tags] || []
+    show_full_comment_url = opts[:show_full_comment_url]
 
     # Convert the title of the comment into tags
     # The original_title gsub won't work if a nonnie changes the comment from what the first
@@ -31,7 +32,11 @@ class Interpreter
     comment_title_tag = ".title:" + comment_title.gsub(/-/, "").strip.gsub(/\s/, '.')
 
     comment_css_id = content.parent.parent.parent.parent.attribute("id").value.gsub(/comment-/, "")
+    comment_url = content.parent.parent.parent.css(".commentpermalink a").first.attribute("href")
     comment_html = content.inner_html.gsub(/<\/?wbr>/, "")
+
+
+    comment_identifier = show_full_comment_url ? comment_css_id : comment_url
 
     urls = URI.extract(comment_html, ['http', 'https'])
 
@@ -74,7 +79,7 @@ class Interpreter
         description = extract_description_for_url(comment_html, url)
       end
 
-      description += "\r\n\r\n#{user_summary}\r\n\r\n#{comment_css_id}"
+      description += "\r\n\r\n#{user_summary}\r\n\r\n#{comment_identifier}"
       rec = Rec.new(:url => access_url, 
               :description => description, 
               :tags => initial_tags + [comment_title_tag] + tags_from_metadata, 

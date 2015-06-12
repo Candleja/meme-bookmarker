@@ -26,8 +26,9 @@ open_rec_urls = true
 limit = nil
 ask_human = true
 source_filter = nil
+show_full_comment_url = true
 links = [
-  "http://fail-fandomanon.dreamwidth.org/141763.html?thread=746494915"
+  "http://fail-fandomanon.dreamwidth.org/142079.html?thread=748038399"
 ]
 
 crawler = Crawler.new(:export_format => "json", 
@@ -35,7 +36,8 @@ crawler = Crawler.new(:export_format => "json",
                       :open_rec_urls => open_rec_urls,
                       :limit => limit,
                       :ask_human => ask_human,
-                      :source_filter => source_filter)
+                      :source_filter => source_filter,
+                      :show_full_comment_url => show_full_comment_url)
 
 links.each do |link|
   p "Crawling #{link} now!"
