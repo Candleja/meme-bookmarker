@@ -39,7 +39,8 @@ class Crawler
     rec_options = {:open_rec_urls => open_rec_urls, 
                    :original_title => original_title,
                    :initial_tags => id_tags,
-                   :show_full_comment_url => show_full_comment_url}
+                   :show_full_comment_url => show_full_comment_url,
+                   :cookie => @config["cookie"]}
 
 
     @recs = []

@@ -21,6 +21,7 @@ class Interpreter
     original_title = opts[:original_title] || ""
     initial_tags = opts[:initial_tags] || []
     show_full_comment_url = opts[:show_full_comment_url]
+    cookie = opts[:cookie]
 
     # Convert the title of the comment into tags
     # The original_title gsub won't work if a nonnie changes the comment from what the first
@@ -51,7 +52,7 @@ class Interpreter
       if open_rec_urls
         access_url = get_access_url(url)
         begin
-          page = Nokogiri::HTML(open(access_url.dup, :allow_redirections => :safe))
+          page = Nokogiri::HTML(open(access_url.dup, "Cookie" => cookie, :allow_redirections => :safe))
         rescue Exception => e
           p "Error accessing url #{url}!"
           p e.message

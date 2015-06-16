@@ -83,7 +83,7 @@ class AO3Parser < FansiteParser
   end
 
   def individual_work?
-    @url.match(/archiveofourown.org\/works\/\d+/)
+    @url.match(/archiveofourown.org\/(.+\/)?works\/\d+/)
   end
 
   def tag_page?

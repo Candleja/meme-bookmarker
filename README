@@ -12,7 +12,7 @@ TODO:
 Maybe make a javascript bookmarklet or other thing that pulls tags from ao3 pages (rating, fandom, character, tags) and copies them to clipboard or something
 
 
-livejournal fandom (and other) parser? recognize kinkmemes, at least...
+livejournal fandom (and other) parser? recognize kinkmemes, at least... the comment threads, that is
 lj posts have so many stupid style differences
 
 
@@ -20,3 +20,4 @@ lj posts have so many stupid style differences
 
 
 passing through a cookie like a true bandit
+need to make cookie work better
