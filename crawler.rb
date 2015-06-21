@@ -28,10 +28,9 @@ ask_human = true
 source_filter = nil #:lj
 show_full_comment_url = true
 links = [
-  "http://fail-fandomanon.dreamwidth.org/142213.html?thread=749616005",
-  "http://fail-fandomanon.dreamwidth.org/142764.html?thread=751207084",
-  "http://fail-fandomanon.dreamwidth.org/143077.html?thread=752800741", #222
-  "http://fail-fandomanon.dreamwidth.org/143259.html?thread=754402459" #223
+  "http://fail-fandomanon.dreamwidth.org/143958.html?thread=759150166", #226
+  "http://fail-fandomanon.dreamwidth.org/144221.html?thread=760722781", #227
+  "http://fail-fandomanon.dreamwidth.org/144457.html?thread=762279753" #228
 ]
 
 crawler = Crawler.new(:export_format => "json", 

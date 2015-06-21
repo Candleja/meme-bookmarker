@@ -6,6 +6,7 @@ class FFNParser < FansiteParser
   end
 
   def get_user_summary
+    return "" unless individual_work?
     "Author Summary:\n" + @page.css("#profile_top .xcontrast_txt")[5].text.strip
   end
 
@@ -36,6 +37,8 @@ class FFNParser < FansiteParser
   
   # Returns an int
   def get_raw_word_count
+    return 0 unless individual_work?
+    
     word_count = grey_metadata_bar.text.match(/Words: ([\d,]+) -/).try(:[], 1)
 
     if word_count
