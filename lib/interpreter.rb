@@ -190,7 +190,7 @@ class Interpreter
   # We can't modify the URL before we gsub it 
   def get_access_url(url)
     if url =~ /fanfiction.net/
-      url.sub(/http:/, "https:")
+      url.sub(/http:/, "https:").sub(/m.fanfiction.net/, "www.fanfiction.net")
     elsif url =~ /archiveofourown.org/
       url.sub(/https:/, "http:")
     else

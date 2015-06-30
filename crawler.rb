@@ -28,9 +28,7 @@ ask_human = true
 source_filter = nil #:lj
 show_full_comment_url = true
 links = [
-  "http://fail-fandomanon.dreamwidth.org/143958.html?thread=759150166", #226
-  "http://fail-fandomanon.dreamwidth.org/144221.html?thread=760722781", #227
-  "http://fail-fandomanon.dreamwidth.org/144457.html?thread=762279753" #228
+  "http://fail-fandomanon.dreamwidth.org/145320.html?thread=766996136" #231
 ]
 
 crawler = Crawler.new(:export_format => "json", 
